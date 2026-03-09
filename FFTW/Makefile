@@ -41,7 +41,7 @@ CFLAGS += -I$(HDF5_ROOT)/include
 CFLAGS += -I$(FFTW_ROOT)/include
 
 LIBS     = -L$(HDF5_ROOT)/lib -lhdf5
-LIBS   += -L$(FFTW_ROOT)/lib -lfftw3
+LIBS   += -L$(FFTW_ROOT)/lib -lfftw3 -lm
 
 
 #-- Define the executable

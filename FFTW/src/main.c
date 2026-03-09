@@ -2,8 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <complex.h>
+
 #include "hdf5.h"
 #include <fftw3.h>
+
+#include "testfunctions.h"
 
 
 
@@ -102,17 +106,72 @@ int main(int argc, char **argv)
     status = H5Aclose(attr_id);
 
 	/* Test 1 */
-	grp_test_id = H5Gcreate(grp_1D_id, "/TestOne", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-	//
+	hid_t dataset_id;
+	grp_test_id = H5Gcreate(grp_1D_id, "TestOne", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+	
+	double a = 2.;
+	fftw_complex *y_arr, *FFT_c2c;
+	fftw_plan plan;
+
+	y_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    plan = fftw_plan_dft_1d(Nx, y_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+	
+
+	TestFunctionOne(Nx, &x_arr[0], &y_arr[0], a);
+
+	fftw_execute(plan);
+
+
+
+	
+	double y_arr_Real[Nx], y_arr_Imag[Nx];
+
+	for (i = 0; i < Nx; i++)
+	{
+		y_arr_Real[i] = creal(y_arr[i]);
+		y_arr_Imag[i] = cimag(y_arr[i]);
+	}
+
+	dataset_id = H5Dcreate(grp_test_id, "y_arr_Real", H5T_IEEE_F64BE, dataspace_id_c, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+	status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &y_arr_Real);
+	status = H5Dclose(dataset_id);
+
+	dataset_id = H5Dcreate(grp_test_id, "y_arr_Imag", H5T_IEEE_F64BE, dataspace_id_c, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &y_arr_Imag);
+    status = H5Dclose(dataset_id);
+
+
+	double FFT_c2c_Real[Nx], FFT_c2c_Imag[Nx];
+
+	for (i = 0; i < Nx; i++)
+	{
+		FFT_c2c_Real[i] = creal(FFT_c2c[i]);
+		FFT_c2c_Imag[i] = cimag(FFT_c2c[i]);
+	}
+
+	dataset_id = H5Dcreate(grp_test_id, "FFT_c2c_Real", H5T_IEEE_F64BE, dataspace_id_c, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &FFT_c2c_Real);
+    status = H5Dclose(dataset_id);
+
+    dataset_id = H5Dcreate(grp_test_id, "FFT_c2c_Imag", H5T_IEEE_F64BE, dataspace_id_c, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &FFT_c2c_Imag);
+    status = H5Dclose(dataset_id);
+
+
+
 	// what do I add for each test?
 	// f(x)
 	// FFT_c2c
 	// iFFT_c2c
 	// FFT_analytic_c2c
-	// FFT_c2c
+	// FFT_r2c
 	// iFFT_r2c
 	// FFT_analytic_r2c
 
+	fftw_destroy_plan(plan);
+    fftw_free(y_arr); 
+	fftw_free(FFT_c2c);
 
 	status = H5Gclose(grp_test_id);
 	status = H5Fclose(file_id);

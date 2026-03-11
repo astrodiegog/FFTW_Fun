@@ -148,6 +148,19 @@ int main(int argc, char **argv)
 	RunTestOne(grp_test_id, &x_arr[0], dataspace_id_c, &kx_arr_c[0], dataspace_id_r, &kx_arr_r[0], Nx, Nx_r, a);
 
 
+	/* Run Test 2 */
+	grp_test_id = H5Gcreate(grp_1D_id, "TestTwo", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+    a = 30.;
+    RunTestTwo(grp_test_id, &x_arr[0], dataspace_id_c, &kx_arr_c[0], dataspace_id_r, &kx_arr_r[0], Nx, Nx_r, a);
+
+
+	/* Run Test 3 */
+    grp_test_id = H5Gcreate(grp_1D_id, "TestThree", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+    a = 17.;
+    RunTestThree(grp_test_id, &x_arr[0], dataspace_id_c, &kx_arr_c[0], dataspace_id_r, &kx_arr_r[0], Nx, Nx_r, a);
+
 
 	/* Free malloc-ed arrays*/
 	free(x_arr);

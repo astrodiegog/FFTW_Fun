@@ -97,16 +97,14 @@ extern void RunTestOne(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, d
     fftw_execute(plan_iFFT_c2c);
     fftw_execute(plan_iFFT_c2r);
 
-
-
 	/* Write info: f(x), FFT_c2c, iFFT_c2c, FFT_analytic_c2c, FFT_r2c, iFFT_r2c, FFT_analytic_r2c */
-    add_yarr_1Dgrouptest(grp_test_id, dataspace_id_c, &y_arr[0], Nx);
-    add_FFTc2c_1Dgrouptest(grp_test_id, dataspace_id_c, &FFT_c2c[0], Nx);
-    add_iFFTc2c_1Dgrouptest(grp_test_id, dataspace_id_c, &iFFT_c2c[0], Nx);
-    add_FFTanalyticc2c_1Dgrouptest(grp_test_id, dataspace_id_c, &FFT_analytic_c2c[0], Nx);
-    add_FFTr2c_1Dgrouptest(grp_test_id, dataspace_id_c, &FFT_r2c[0], Nx);
-    add_iFFTc2r_1Dgrouptest(grp_test_id, dataspace_id_r, &iFFT_c2r[0]);
-    add_FFTanalyticr2c_1Dgrouptest(grp_test_id, dataspace_id_r, &FFT_analytic_r2c[0], Nx_r);
+	Write_FFTWarr_1Dgrouptest(grp_test_id, "y_arr", dataspace_id_c, &y_arr[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_c, &FFT_r2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_c, &FFT_analytic_r2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx);
+    Write_HDF5_1Dgrouptest(grp_test_id, "iFFT_c2r", dataspace_id_r, &iFFT_c2r[0]);
 
 	/* Destroy FFT plans */
     fftw_destroy_plan(plan_FFT_c2c);
@@ -122,7 +120,6 @@ extern void RunTestOne(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, d
     fftw_free(FFT_r2c);
     fftw_free(FFT_analytic_r2c);
     free(iFFT_c2r);
-
 }
 
 

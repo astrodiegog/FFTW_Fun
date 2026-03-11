@@ -52,7 +52,7 @@ extern void RunTestOne(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, d
     fftw_complex *FFT_r2c, *FFT_analytic_r2c;
     double *iFFT_c2r;
 
-    double y_arr_Real[Nx], y_arr_Imag[Nx];
+    double y_arr_Real[Nx];
 
     fftw_plan plan_FFT_c2c, plan_FFT_r2c;
     fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
@@ -84,7 +84,6 @@ extern void RunTestOne(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, d
     for (i = 0; i < Nx; i++)
     {
         y_arr_Real[i] = creal(y_arr[i]);
-        y_arr_Imag[i] = cimag(y_arr[i]);
     }
 
     /* Evalute F(k) */

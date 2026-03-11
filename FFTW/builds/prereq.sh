@@ -10,7 +10,7 @@ if [ "$1" == "build" ]; then
     lux)
       if ! module is-loaded gcc; then
         echo "modulefile required: gcc"
-        echo "do: 'module load gcc hdf5/1.10.6 fftw/3.3.8'"
+        echo "do: 'module load gcc hdf5/1.10.6'"
         exit 1
       fi
       ;;

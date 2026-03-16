@@ -19,3 +19,8 @@ void Write_HDF5_1Dgrouptest(hid_t grp_test_id, char *arr_name, hid_t dataspace_i
 /* Routine to write Real&Imaginary array of fftw_complex with size Nx */
 extern void Write_FFTWarr_1Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t dataspace_id, fftw_complex *FFTW_arr, int Nx);
 
+/* \fn void Write_FFTWarr_2Dgrouptest(hid_t, char *, hid_t, fftw_complex *, int, int) */
+/* Routine to write Real&Imaginary array of fftw_complex with size Nx,Ny */
+extern void Write_FFTWarr_2Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t dataspace_id, fftw_complex *FFTW_arr, int Nx, int Ny);
+
+

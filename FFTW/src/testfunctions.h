@@ -3,7 +3,7 @@
 
 #include <complex.h>
 
-#include "add1D_utils.h"
+#include "HDF5_utils.h"
 
 
 #include "hdf5.h"
@@ -42,17 +42,28 @@ extern void TestFunctionThree(int Nx, double *x_arr, fftw_complex *y_arr, double
 extern void TestFunctionThree_FFT(int Nx, double *kx_arr, fftw_complex *FFT_analytic, double a);
 
 
+/* \fn void TestFunctionFour(int, int, double *, double *, fftw_complex *) */
+/* Routine for testing fftw */
+extern void TestFunctionFour(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr);
 
-/* \fn void RunTestOne(hid_t, double *, double *, double *, int, double) */
+/* \fn void TestFunctionThree_FFT(int, int, double *, double *, fftw_complex *) */
+/* Routine for analytic fft */
+extern void TestFunctionFour_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic);
+
+
+/* \fn void RunTestOne(hid_t, double *, hid_t, double *, hid_t, double *, int, int, double) */
 /* Routine to complete Test One */
 extern void RunTestOne(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, double *kx_arr_c, hid_t dataspace_id_r, double *kx_arr_r, int Nx, int Nx_r, double a);
 
-/* \fn void RunTestTwo(hid_t, double *, double *, double *, int, double) */
+/* \fn void RunTestTwo(hid_t, double *, hid_t, double *, hid_t, double *, int, int, double) */
 /* Routine to complete Test Two */
 extern void RunTestTwo(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, double *kx_arr_c, hid_t dataspace_id_r, double *kx_arr_r, int Nx, int Nx_r, double a);
 
-/* \fn void RunTestThree(hid_t, double *, double *, double *, int, double) */
+/* \fn void RunTestThree(hid_t, double *, hid_t, double *, hid_t, double *, int, int, double) */
 /* Routine to complete Test Three */
 extern void RunTestThree(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, double *kx_arr_c, hid_t dataspace_id_r, double *kx_arr_r, int Nx, int Nx_r, double a);
 
+/* \fn void RunTestFour(hid_t, double *, double *, hid_t, double *, double *, hid_t, double *, double *, int, int, int, int, double) */
+/* Routine to complete Test Four */
+extern void RunTestFour(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *kx_arr_r, double *ky_arr_r, int Nx, int Ny, int Nx_r, int Ny_r);
 

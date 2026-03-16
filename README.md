@@ -115,7 +115,7 @@ $$
 
 
 For the one-dimensional cases, we will use array from $x \in (-5,5)$ with 2048 grid points.
-For the two-dimensional cases, we will use domain with same x values and y values $y \in (-5,5)$ with (1024,1024) grid points.
+For the two-dimensional cases, we will use domain with same x values and y values $y \in (-10,10)$ with (256,512) grid points.
 
 
 In the future, would like to also test Heaviside function (equations 205 and 315), Bessel function (equation 317), and log|x| (equation 319), as well as exponential of absolute value (equation 504) and Reisz potential (equation 502). Source of functions and their Fourier Transforms: https://en.wikipedia.org/wiki/Fourier_transform

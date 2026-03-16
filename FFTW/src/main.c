@@ -248,8 +248,20 @@ int main(int argc, char **argv)
 	/* Run Test 4 */
     grp_test_id = H5Gcreate(grp_2D_id, "TestFour", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-    RunTestFour(grp_test_id, &x_arr[0], &y_arr[0], dataspace2D_id_c, &kx_arr_c[0], &ky_arr_c[0], dataspace2D_id_r, &kx_arr_r[0], &ky_arr_r[0], Nx, Ny, Nx_r, Ny_r);
+    RunTestFour(grp_test_id, &x_arr[0], &y_arr[0], dataspace2D_id_c, &kx_arr_c[0], &ky_arr_c[0], dataspace2D_id_r, &ky_arr_r[0], Nx, Ny, Ny_r);
 
+
+	/* Run Test 5 */
+    grp_test_id = H5Gcreate(grp_2D_id, "TestFive", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+    RunTestFive(grp_test_id, &x_arr[0], &y_arr[0], dataspace2D_id_c, &kx_arr_c[0], &ky_arr_c[0], dataspace2D_id_r, &ky_arr_r[0], Nx, Ny, Ny_r);
+
+	/* Run Test 6 */
+    grp_test_id = H5Gcreate(grp_2D_id, "TestSix", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	a = 0.5;
+	double b = 0.3;
+    RunTestSix(grp_test_id, &x_arr[0], &y_arr[0], dataspace2D_id_c, &kx_arr_c[0], &ky_arr_c[0], dataspace2D_id_r, &ky_arr_r[0], Nx, Ny, Ny_r, a, b);
 
 
 	/* Free malloc-ed arrays*/

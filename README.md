@@ -121,3 +121,5 @@ For the two-dimensional cases, we will use domain with same x values and y value
 In the future, would like to also test Heaviside function (equations 205 and 315), Bessel function (equation 317), and log|x| (equation 319), as well as exponential of absolute value (equation 504) and Reisz potential (equation 502). Source of functions and their Fourier Transforms: https://en.wikipedia.org/wiki/Fourier_transform
 
 
+The benefits from multithreading are most visible when we complete a 2D FFT over a larger domain (like (2048, 4096)) but these create large HDF5 files, so I leave these dimensions commented out.
+

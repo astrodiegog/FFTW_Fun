@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include <complex.h>
 
 #include "hdf5.h"
-#include <fftw3.h>
 
 #include "testfunctions.h"
 
@@ -122,6 +122,11 @@ int main(int argc, char **argv)
     double ymin, ymax, dy;
     double *y_arr, *ky_arr_c, *ky_arr_r;
 
+	/* Declare time info */
+	time_t t_start, t_end;
+	float t_elapsed;
+
+	t_start = time(NULL);
 
 	/* Create file */
     file_id = H5Fcreate(FileName, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
@@ -264,6 +269,8 @@ int main(int argc, char **argv)
     RunTestSix(grp_test_id, &x_arr[0], &y_arr[0], dataspace2D_id_c, &kx_arr_c[0], &ky_arr_c[0], dataspace2D_id_r, &ky_arr_r[0], Nx, Ny, Ny_r, a, b);
 
 
+
+
 	/* Free malloc-ed arrays*/
 	free(x_arr);
 	free(kx_arr_c);
@@ -279,6 +286,10 @@ int main(int argc, char **argv)
 	status = H5Gclose(grp_2D_id);
 	status = H5Fclose(file_id);
 
+	t_end = time(NULL);
+	t_elapsed = difftime(t_end, t_start) ;
+
+	printf("Program took %f secs \n", t_elapsed);
 	return 0;
 }
 

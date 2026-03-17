@@ -1,0 +1,744 @@
+#include "testfunctions.h"
+
+extern void TestFunctionOne(int Nx, double *x_arr, fftw_complex *y_arr, double a)
+{
+	int i;
+	double x;
+	for (i = 0; i < Nx; i++)
+	{
+		x = x_arr[i];
+		if ( fabs(x) > (1. / (2. * a)) )
+		{
+			y_arr[i] = 0. + 0. * I;
+		}
+		else
+		{
+			y_arr[i] = 1. + 0. * I;
+		}
+	} 
+
+	return;
+}
+
+
+extern void TestFunctionOne_FFT(int Nx, double *kx_arr, fftw_complex *FFT_analytic, double a)
+{
+    int i;
+    double kx;
+    for (i = 0; i < Nx; i++)
+    {
+        kx = kx_arr[i];
+		if (kx == 0)
+		{
+			FFT_analytic[i] = 1. + 0. * I;
+		}
+		else
+		{
+			FFT_analytic[i] = sin((M_PI * kx) / a) / ((kx * M_PI) / a)  + 0. * I;
+		}
+    }
+
+    return;
+}
+
+
+extern void TestFunctionTwo(int Nx, double *x_arr, fftw_complex *y_arr, double a)
+{   
+    int i; 
+    double x, x2;
+    for (i = 0; i < Nx; i++)
+    {   
+        x = x_arr[i];
+		x2 = x * x;
+		y_arr[i] = exp(-1. * a * x2);
+    }
+    
+    return;
+}
+
+
+extern void TestFunctionTwo_FFT(int Nx, double *kx_arr, fftw_complex *FFT_analytic, double a)
+{   
+    int i; 
+    double kx, kx2, exp_arg;
+    for (i = 0; i < Nx; i++)
+    {   
+        kx = kx_arr[i];
+		kx2 = kx * kx;
+		exp_arg = -1. * M_PI * M_PI * kx2 / a;
+		FFT_analytic[i] = sqrt(M_PI / a) * exp(exp_arg);
+
+    }
+    
+    return;
+}
+
+extern void TestFunctionThree(int Nx, double *x_arr, fftw_complex *y_arr, double a)
+{
+    int i;
+    double x;
+    for (i = 0; i < Nx; i++)
+    {
+        x = x_arr[i];
+        y_arr[i] = exp(-1. * a * fabs(x));
+    }
+
+    return;
+}
+
+
+extern void TestFunctionThree_FFT(int Nx, double *kx_arr, fftw_complex *FFT_analytic, double a)
+{
+    int i;
+    double kx, kx2, num, den;
+    for (i = 0; i < Nx; i++)
+    {
+        kx = kx_arr[i];
+        kx2 = kx * kx;
+		num = 2. * a;
+        den = (a * a) + (4. * M_PI * M_PI * kx2);
+        FFT_analytic[i] = num / den;
+    }
+
+    return;
+}
+
+
+extern void TestFunctionFour(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr)
+{   
+    int i, j, indx; 
+    double x, x2, y, y2;
+    for (i = 0; i < Nx; i++)
+    {   
+        x = x_arr[i];
+		x2 = x * x;
+		for (j = 0; j < Ny; j++)
+		{
+			y = y_arr[j];
+			y2 = y * y;
+			indx = j + Ny * i;
+			if (x == 0 && y == 0)
+			{
+				/* Avoid dividing by zero */
+				fxy_arr[indx] = 0. + 0. * I;
+			}
+			else
+			{
+				fxy_arr[indx] = (1. / sqrt(x2 + y2)) + 0. * I;
+			}
+		}
+    }
+
+    return;
+}
+
+extern void TestFunctionFour_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic)
+{
+	int i, j, indx;
+    double kx, kx2, ky, ky2;
+    for (i = 0; i < Nx; i++)
+    {
+        kx = kx_arr[i];
+        kx2 = kx * kx;
+        for (j = 0; j < Ny; j++)
+        {
+            ky = ky_arr[j];
+            ky2 = ky * ky;
+            indx = j + Ny * i;
+			if (kx == 0 && ky == 0)
+            {
+                /* Avoid dividing by zero */
+                FFT_analytic[indx] = 0. + 0. * I;
+            }
+            else
+            {
+				FFT_analytic[indx] = (1. / sqrt(kx2 + ky2) ) + 0. * I;
+			}
+        }
+    }
+
+    return;
+}
+
+extern void TestFunctionFive(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr)
+{
+    int i, j, indx;
+    double x, y;
+    for (i = 0; i < Nx; i++)
+    {   
+        x = x_arr[i];
+        for (j = 0; j < Ny; j++)
+        {   
+            y = y_arr[j];
+            indx = j + Ny * i; 
+            if (x == 0 && y == 0)
+            {   
+                /* Avoid dividing by zero */
+                fxy_arr[indx] = 0. + 0. * I;
+            }
+            else
+            {   
+                fxy_arr[indx] = (1. * I )/ (x + y * I);
+            }
+        }
+    }
+    return;
+}
+
+extern void TestFunctionFive_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic)
+{
+    int i, j, indx;
+    double kx, ky;
+    for (i = 0; i < Nx; i++)
+    {
+        kx = kx_arr[i];
+        for (j = 0; j < Ny; j++)
+        {
+            ky = ky_arr[j];
+            indx = j + Ny * i;
+            if (kx == 0 && ky == 0)
+            {
+                /* Avoid dividing by zero */
+                FFT_analytic[indx] = 0. + 0. * I;
+            }
+            else
+            {
+                FFT_analytic[indx] = 1. / (kx + ky * I) ;
+            }
+        }
+    }
+
+    return;
+}
+
+
+extern void TestFunctionSix(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr, double a, double b)
+{   
+    int i, j, indx;
+    double x, x2, y, y2, a2, b2, exp_arg;
+	a2 = a * a;
+	b2 = b * b;
+    for (i = 0; i < Nx; i++)
+    {   
+        x = x_arr[i];
+		x2 = x * x;
+        for (j = 0; j < Ny; j++)
+        {   
+            y = y_arr[j]; 
+			y2 = y * y;
+            indx = j + Ny * i; 
+   			exp_arg = -1. * M_PI * (a2 * x2 + b2 * y2);
+            fxy_arr[indx] = exp(exp_arg);
+        }
+    }
+    return;
+}
+
+
+extern void TestFunctionSix_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic, double a, double b)
+{
+    int i, j, indx;
+    double kx, kx2, ky, ky2, a2, b2, exp_arg;
+	a2 = a * a;
+	b2 = b * b;
+    for (i = 0; i < Nx; i++)
+    {
+        kx = kx_arr[i];
+		kx2 = kx * kx;
+        for (j = 0; j < Ny; j++)
+        {
+            ky = ky_arr[j];
+			ky2 = ky * ky;
+            indx = j + Ny * i;
+			exp_arg = -1. * M_PI * (kx2 / a2 + ky2 / b2);
+			FFT_analytic[indx] = (1. / fabs( a * b)) * exp(exp_arg);
+
+        }       
+    }       
+        
+    return;
+}
+
+
+extern void RunTestOne(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, double *kx_arr_c, hid_t dataspace_id_r, double *kx_arr_r, int Nx, int Nx_r, double a)
+{
+	/* Declare variables */
+	fftw_complex *y_arr;
+    fftw_complex *FFT_c2c, *iFFT_c2c, *FFT_analytic_c2c;
+    fftw_complex *FFT_r2c, *FFT_analytic_r2c;
+    double *iFFT_c2r;
+
+    double y_arr_Real[Nx];
+
+    fftw_plan plan_FFT_c2c, plan_FFT_r2c;
+    fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
+
+	int i;
+
+	/* Allocate memory for arrays+plan */
+    y_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx_r);
+    FFT_analytic_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_analytic_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx_r);
+	iFFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    iFFT_c2r = (double *) malloc(sizeof(double) * Nx);
+
+	/* Create FFT c2c plans */
+    plan_FFT_c2c = fftw_plan_dft_1d(Nx, y_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+    plan_iFFT_c2c = fftw_plan_dft_1d(Nx, FFT_c2c, iFFT_c2c, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    /* Create FFT r2c and c2r plans */
+    plan_FFT_r2c = fftw_plan_dft_r2c_1d(Nx, y_arr_Real, FFT_r2c, FFTW_ESTIMATE);
+    plan_iFFT_c2r = fftw_plan_dft_c2r_1d(Nx, FFT_r2c, iFFT_c2r, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+
+    /* Evaluate f(x) , grab real values for r2c */
+    TestFunctionOne(Nx, &x_arr[0], &y_arr[0], a);
+    for (i = 0; i < Nx; i++)
+    {
+        y_arr_Real[i] = creal(y_arr[i]);
+    }
+
+    /* Evalute F(k) */
+    TestFunctionOne_FFT(Nx, &kx_arr_c[0], &FFT_analytic_c2c[0], a);
+    TestFunctionOne_FFT(Nx_r, &kx_arr_r[0], &FFT_analytic_r2c[0], a);
+
+    /* Execute FFT */
+    fftw_execute(plan_FFT_c2c);
+    fftw_execute(plan_FFT_r2c);
+    fftw_execute(plan_iFFT_c2c);
+    fftw_execute(plan_iFFT_c2r);
+
+	/* Write info: f(x), FFT_c2c, iFFT_c2c, FFT_analytic_c2c, FFT_r2c, iFFT_r2c, FFT_analytic_r2c */
+	Write_FFTWarr_1Dgrouptest(grp_test_id, "y_arr", dataspace_id_c, &y_arr[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_r, &FFT_r2c[0], Nx_r);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_r, &FFT_analytic_r2c[0], Nx_r);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx);
+    Write_HDF5_dataset(grp_test_id, "iFFT_c2r", dataspace_id_c, &iFFT_c2r[0]);
+
+	/* Destroy FFT plans */
+    fftw_destroy_plan(plan_FFT_c2c);
+    fftw_destroy_plan(plan_FFT_r2c);
+    fftw_destroy_plan(plan_iFFT_c2c);
+    fftw_destroy_plan(plan_iFFT_c2r);
+
+	/* Free memory */
+    fftw_free(y_arr);
+    fftw_free(FFT_c2c);
+    fftw_free(FFT_analytic_c2c);
+    fftw_free(iFFT_c2c);
+    fftw_free(FFT_r2c);
+    fftw_free(FFT_analytic_r2c);
+    free(iFFT_c2r);
+}
+
+
+extern void RunTestTwo(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, double *kx_arr_c, hid_t dataspace_id_r, double *kx_arr_r, int Nx, int Nx_r, double a)
+{
+    /* Declare variables */
+    fftw_complex *y_arr;
+    fftw_complex *FFT_c2c, *iFFT_c2c, *FFT_analytic_c2c;
+    fftw_complex *FFT_r2c, *FFT_analytic_r2c;
+    double *iFFT_c2r;
+
+    double y_arr_Real[Nx];
+
+    fftw_plan plan_FFT_c2c, plan_FFT_r2c;
+    fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
+
+    int i;
+
+    /* Allocate memory for arrays+plan */
+    y_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx_r);
+    FFT_analytic_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_analytic_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx_r);
+    iFFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    iFFT_c2r = (double *) malloc(sizeof(double) * Nx);
+
+    /* Create FFT c2c plans */
+    plan_FFT_c2c = fftw_plan_dft_1d(Nx, y_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+    plan_iFFT_c2c = fftw_plan_dft_1d(Nx, FFT_c2c, iFFT_c2c, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    /* Create FFT r2c and c2r plans */
+    plan_FFT_r2c = fftw_plan_dft_r2c_1d(Nx, y_arr_Real, FFT_r2c, FFTW_ESTIMATE);
+    plan_iFFT_c2r = fftw_plan_dft_c2r_1d(Nx, FFT_r2c, iFFT_c2r, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+
+    /* Evaluate f(x) , grab real values for r2c */
+    TestFunctionTwo(Nx, &x_arr[0], &y_arr[0], a);
+    for (i = 0; i < Nx; i++)
+    {
+        y_arr_Real[i] = creal(y_arr[i]);
+    }
+
+    /* Evalute F(k) */
+    TestFunctionTwo_FFT(Nx, &kx_arr_c[0], &FFT_analytic_c2c[0], a);
+    TestFunctionTwo_FFT(Nx_r, &kx_arr_r[0], &FFT_analytic_r2c[0], a);
+
+    /* Execute FFT */
+    fftw_execute(plan_FFT_c2c);
+    fftw_execute(plan_FFT_r2c);
+    fftw_execute(plan_iFFT_c2c);
+    fftw_execute(plan_iFFT_c2r);
+
+    /* Write info: f(x), FFT_c2c, iFFT_c2c, FFT_analytic_c2c, FFT_r2c, iFFT_r2c, FFT_analytic_r2c */
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "y_arr", dataspace_id_c, &y_arr[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_r, &FFT_r2c[0], Nx_r);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_r, &FFT_analytic_r2c[0], Nx_r);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx);
+    Write_HDF5_dataset(grp_test_id, "iFFT_c2r", dataspace_id_c, &iFFT_c2r[0]);
+
+    /* Destroy FFT plans */
+    fftw_destroy_plan(plan_FFT_c2c);
+    fftw_destroy_plan(plan_FFT_r2c);
+    fftw_destroy_plan(plan_iFFT_c2c);
+    fftw_destroy_plan(plan_iFFT_c2r);
+
+    /* Free memory */
+    fftw_free(y_arr);
+    fftw_free(FFT_c2c);
+    fftw_free(FFT_analytic_c2c);
+    fftw_free(iFFT_c2c);
+    fftw_free(FFT_r2c);
+    fftw_free(FFT_analytic_r2c);
+    free(iFFT_c2r);
+}
+
+
+extern void RunTestThree(hid_t grp_test_id, double *x_arr, hid_t dataspace_id_c, double *kx_arr_c, hid_t dataspace_id_r, double *kx_arr_r, int Nx, int Nx_r, double a)
+{
+    /* Declare variables */
+    fftw_complex *y_arr;
+    fftw_complex *FFT_c2c, *iFFT_c2c, *FFT_analytic_c2c;
+    fftw_complex *FFT_r2c, *FFT_analytic_r2c;
+    double *iFFT_c2r;
+
+    double y_arr_Real[Nx];
+
+    fftw_plan plan_FFT_c2c, plan_FFT_r2c;
+    fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
+
+    int i;
+
+    /* Allocate memory for arrays+plan */
+    y_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx_r);
+    FFT_analytic_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    FFT_analytic_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx_r);
+    iFFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx);
+    iFFT_c2r = (double *) malloc(sizeof(double) * Nx);
+
+    /* Create FFT c2c plans */
+    plan_FFT_c2c = fftw_plan_dft_1d(Nx, y_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+    plan_iFFT_c2c = fftw_plan_dft_1d(Nx, FFT_c2c, iFFT_c2c, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    /* Create FFT r2c and c2r plans */
+    plan_FFT_r2c = fftw_plan_dft_r2c_1d(Nx, y_arr_Real, FFT_r2c, FFTW_ESTIMATE);
+    plan_iFFT_c2r = fftw_plan_dft_c2r_1d(Nx, FFT_r2c, iFFT_c2r, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+
+    /* Evaluate f(x) , grab real values for r2c */
+    TestFunctionThree(Nx, &x_arr[0], &y_arr[0], a);
+    for (i = 0; i < Nx; i++)
+    {
+        y_arr_Real[i] = creal(y_arr[i]);
+    }
+
+    /* Evalute F(k) */
+    TestFunctionThree_FFT(Nx, &kx_arr_c[0], &FFT_analytic_c2c[0], a);
+    TestFunctionThree_FFT(Nx_r, &kx_arr_r[0], &FFT_analytic_r2c[0], a);
+
+    /* Execute FFT */
+    fftw_execute(plan_FFT_c2c);
+    fftw_execute(plan_FFT_r2c);
+    fftw_execute(plan_iFFT_c2c);
+    fftw_execute(plan_iFFT_c2r);
+
+    /* Write info: f(x), FFT_c2c, iFFT_c2c, FFT_analytic_c2c, FFT_r2c, iFFT_r2c, FFT_analytic_r2c */
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "y_arr", dataspace_id_c, &y_arr[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_r, &FFT_r2c[0], Nx_r);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_r, &FFT_analytic_r2c[0], Nx_r);
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx);
+    Write_HDF5_dataset(grp_test_id, "iFFT_c2r", dataspace_id_c, &iFFT_c2r[0]);
+
+    /* Destroy FFT plans */
+    fftw_destroy_plan(plan_FFT_c2c);
+    fftw_destroy_plan(plan_FFT_r2c);
+    fftw_destroy_plan(plan_iFFT_c2c);
+    fftw_destroy_plan(plan_iFFT_c2r);
+
+    /* Free memory */
+    fftw_free(y_arr);
+    fftw_free(FFT_c2c);
+    fftw_free(FFT_analytic_c2c);
+    fftw_free(iFFT_c2c);
+    fftw_free(FFT_r2c);
+    fftw_free(FFT_analytic_r2c);
+	free(iFFT_c2r);
+}
+
+
+extern void RunTestFour(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *ky_arr_r, int Nx, int Ny, int Ny_r)
+{
+    /* Declare variables */
+    fftw_complex *fxy_arr;
+    fftw_complex *FFT_c2c, *iFFT_c2c, *FFT_analytic_c2c;
+    fftw_complex *FFT_r2c, *FFT_analytic_r2c;
+    double *iFFT_c2r;
+
+	double *fxy_arr_Real;
+
+    fftw_plan plan_FFT_c2c, plan_FFT_r2c;
+    fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
+
+    int i, j, indx;
+
+
+    /* Allocate memory for arrays+plan */
+    fxy_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    fxy_arr_Real = (double *) fftw_malloc(sizeof(double) * Nx * Ny);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    FFT_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny_r);
+    FFT_analytic_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    FFT_analytic_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny_r);
+    iFFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    iFFT_c2r = (double *) fftw_malloc(sizeof(double) * Nx * Ny);
+
+    /* Create FFT c2c plans */
+    plan_FFT_c2c = fftw_plan_dft_2d(Nx, Ny, fxy_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+    plan_iFFT_c2c = fftw_plan_dft_2d(Nx, Ny, FFT_c2c, iFFT_c2c, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    /* Create FFT r2c and c2r plans */
+    plan_FFT_r2c = fftw_plan_dft_r2c_2d(Nx, Ny, fxy_arr_Real, FFT_r2c, FFTW_ESTIMATE);
+    plan_iFFT_c2r = fftw_plan_dft_c2r_2d(Nx, Ny, FFT_r2c, iFFT_c2r, FFTW_ESTIMATE );
+
+    /* Evaluate f(x) , grab real values for r2c */
+    TestFunctionFour(Nx, Ny, &x_arr[0], &y_arr[0], &fxy_arr[0]);
+    for (i = 0; i < Nx; i++)
+    {
+        for (j = 0; j < Ny; j++)
+        {
+            indx = j + Ny * i;
+            fxy_arr_Real[indx] = creal(fxy_arr[indx]);
+        }
+    }
+
+    /* Evalute F(k) */
+    TestFunctionFour_FFT(Nx, Ny, &kx_arr_c[0], &ky_arr_c[0], &FFT_analytic_c2c[0]);
+    TestFunctionFour_FFT(Nx, Ny_r, &kx_arr_c[0], &ky_arr_r[0], &FFT_analytic_r2c[0]);
+
+    /* Execute FFT */
+    fftw_execute(plan_FFT_c2c);
+    fftw_execute(plan_FFT_r2c);
+
+	/* Write f(x), FFT_c2c, FFT_analytic_c2c, FFT_r2c, FFT_analytic_r2c as iFFT destroys input */
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "fxy_arr", dataspace_id_c, &fxy_arr[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_r, &FFT_r2c[0], Nx, Ny_r);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_r, &FFT_analytic_r2c[0], Nx, Ny_r);
+
+	/* Execute iFFT */
+	fftw_execute(plan_iFFT_c2c);
+    fftw_execute(plan_iFFT_c2r);
+
+	/* Write iFFT_c2c, iFFT_r2c */
+	Write_FFTWarr_2Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx, Ny);
+    Write_HDF5_dataset(grp_test_id, "iFFT_c2r", dataspace_id_c, &iFFT_c2r[0]);
+	
+
+    /* Destroy FFT plans */
+    fftw_destroy_plan(plan_FFT_c2c);
+    fftw_destroy_plan(plan_FFT_r2c);
+    fftw_destroy_plan(plan_iFFT_c2c);
+    fftw_destroy_plan(plan_iFFT_c2r);
+
+    /* Free memory */
+    fftw_free(fxy_arr);
+    fftw_free(FFT_c2c);
+    fftw_free(FFT_analytic_c2c);
+    fftw_free(iFFT_c2c);
+    fftw_free(FFT_r2c);
+    fftw_free(FFT_analytic_r2c);
+    fftw_free(iFFT_c2r);
+}
+
+
+
+extern void RunTestFive(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *ky_arr_r, int Nx, int Ny, int Ny_r)
+{
+    /* Declare variables */
+    fftw_complex *fxy_arr;
+    fftw_complex *FFT_c2c, *iFFT_c2c, *FFT_analytic_c2c;
+    fftw_complex *FFT_r2c, *FFT_analytic_r2c;
+    double *iFFT_c2r;
+
+	double *fxy_arr_Real;
+
+    fftw_plan plan_FFT_c2c, plan_FFT_r2c;
+    fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
+
+    int i, j, indx;
+
+
+    /* Allocate memory for arrays+plan */
+    fxy_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+	fxy_arr_Real = (double *) fftw_malloc(sizeof(double) * Nx * Ny);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    FFT_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny_r);
+    FFT_analytic_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    FFT_analytic_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny_r);
+    iFFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    iFFT_c2r = (double *) fftw_malloc(sizeof(double) * Nx * Ny);
+
+    /* Create FFT c2c plans */
+    plan_FFT_c2c = fftw_plan_dft_2d(Nx, Ny, fxy_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+    plan_iFFT_c2c = fftw_plan_dft_2d(Nx, Ny, FFT_c2c, iFFT_c2c, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    /* Create FFT r2c and c2r plans */
+    plan_FFT_r2c = fftw_plan_dft_r2c_2d(Nx, Ny, fxy_arr_Real, FFT_r2c, FFTW_ESTIMATE);
+    plan_iFFT_c2r = fftw_plan_dft_c2r_2d(Nx, Ny, FFT_r2c, iFFT_c2r, FFTW_ESTIMATE );
+
+    /* Evaluate f(x) , grab real values for r2c */
+    TestFunctionFive(Nx, Ny, &x_arr[0], &y_arr[0], &fxy_arr[0]);
+    for (i = 0; i < Nx; i++)
+    {
+        for (j = 0; j < Ny; j++)
+        {
+            indx = j + Ny * i;
+            fxy_arr_Real[indx] = creal(fxy_arr[indx]);
+        }
+    }
+
+    /* Evalute F(k) */
+    TestFunctionFive_FFT(Nx, Ny, &kx_arr_c[0], &ky_arr_c[0], &FFT_analytic_c2c[0]);
+    TestFunctionFive_FFT(Nx, Ny_r, &kx_arr_c[0], &ky_arr_r[0], &FFT_analytic_r2c[0]);
+
+    /* Execute FFT */
+    fftw_execute(plan_FFT_c2c);
+    fftw_execute(plan_FFT_r2c);
+
+    /* Write f(x), FFT_c2c, FFT_analytic_c2c, FFT_r2c, FFT_analytic_r2c as iFFT destroys input */
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "fxy_arr", dataspace_id_c, &fxy_arr[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_r, &FFT_r2c[0], Nx, Ny_r);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_r, &FFT_analytic_r2c[0], Nx, Ny_r);
+
+	/* Execute iFFT */
+    fftw_execute(plan_iFFT_c2c);
+    fftw_execute(plan_iFFT_c2r);
+
+    /* Write iFFT_c2c, iFFT_r2c */
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx, Ny);
+    Write_HDF5_dataset(grp_test_id, "iFFT_c2r", dataspace_id_c, &iFFT_c2r[0]);
+
+
+    /* Destroy FFT plans */
+    fftw_destroy_plan(plan_FFT_c2c);
+    fftw_destroy_plan(plan_FFT_r2c);
+    fftw_destroy_plan(plan_iFFT_c2c);
+    fftw_destroy_plan(plan_iFFT_c2r);
+
+    /* Free memory */
+    fftw_free(fxy_arr);
+    fftw_free(FFT_c2c);
+    fftw_free(FFT_analytic_c2c);
+    fftw_free(iFFT_c2c);
+    fftw_free(FFT_r2c);
+    fftw_free(FFT_analytic_r2c);
+    fftw_free(iFFT_c2r);
+}
+
+extern void RunTestSix(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *ky_arr_r, int Nx, int Ny, int Ny_r, double a, double b)
+{
+    /* Declare variables */
+    fftw_complex *fxy_arr;
+    fftw_complex *FFT_c2c, *iFFT_c2c, *FFT_analytic_c2c;
+    fftw_complex *FFT_r2c, *FFT_analytic_r2c;
+    double *iFFT_c2r;
+
+    double *fxy_arr_Real;
+
+    fftw_plan plan_FFT_c2c, plan_FFT_r2c;
+    fftw_plan plan_iFFT_c2c, plan_iFFT_c2r;
+
+    int i, j, indx;
+
+
+    /* Allocate memory for arrays+plan */
+    fxy_arr = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    fxy_arr_Real = (double *) fftw_malloc(sizeof(double) * Nx * Ny);
+    FFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    FFT_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny_r);
+    FFT_analytic_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    FFT_analytic_r2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny_r);
+    iFFT_c2c = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Nx * Ny);
+    iFFT_c2r = (double *) fftw_malloc(sizeof(double) * Nx * Ny);
+
+    /* Create FFT c2c plans */
+    plan_FFT_c2c = fftw_plan_dft_2d(Nx, Ny, fxy_arr, FFT_c2c, FFTW_FORWARD, FFTW_ESTIMATE);
+    plan_iFFT_c2c = fftw_plan_dft_2d(Nx, Ny, FFT_c2c, iFFT_c2c, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    /* Create FFT r2c and c2r plans */
+    plan_FFT_r2c = fftw_plan_dft_r2c_2d(Nx, Ny, fxy_arr_Real, FFT_r2c, FFTW_ESTIMATE);
+    plan_iFFT_c2r = fftw_plan_dft_c2r_2d(Nx, Ny, FFT_r2c, iFFT_c2r, FFTW_ESTIMATE );
+
+    /* Evaluate f(x) , grab real values for r2c */
+    TestFunctionSix(Nx, Ny, &x_arr[0], &y_arr[0], &fxy_arr[0], a, b);
+    for (i = 0; i < Nx; i++)
+    {
+        for (j = 0; j < Ny; j++)
+        {
+            indx = j + Ny * i;
+            fxy_arr_Real[indx] = creal(fxy_arr[indx]);
+        }
+    }
+
+    /* Evalute F(k) */
+    TestFunctionSix_FFT(Nx, Ny, &kx_arr_c[0], &ky_arr_c[0], &FFT_analytic_c2c[0], a, b);
+    TestFunctionSix_FFT(Nx, Ny_r, &kx_arr_c[0], &ky_arr_r[0], &FFT_analytic_r2c[0], a, b);
+
+    /* Execute FFT */
+    fftw_execute(plan_FFT_c2c);
+    fftw_execute(plan_FFT_r2c);
+
+    /* Write f(x), FFT_c2c, FFT_analytic_c2c, FFT_r2c, FFT_analytic_r2c as iFFT destroys input */
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "fxy_arr", dataspace_id_c, &fxy_arr[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_c2c", dataspace_id_c, &FFT_c2c[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_r2c", dataspace_id_r, &FFT_r2c[0], Nx, Ny_r);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_c2c", dataspace_id_c, &FFT_analytic_c2c[0], Nx, Ny);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace_id_r, &FFT_analytic_r2c[0], Nx, Ny_r);
+
+    /* Execute iFFT */
+    fftw_execute(plan_iFFT_c2c);
+    fftw_execute(plan_iFFT_c2r);
+
+	/* Write iFFT_c2c, iFFT_r2c */
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "iFFT_c2c", dataspace_id_c, &iFFT_c2c[0], Nx, Ny);
+    Write_HDF5_dataset(grp_test_id, "iFFT_c2r", dataspace_id_c, &iFFT_c2r[0]);
+
+
+    /* Destroy FFT plans */
+    fftw_destroy_plan(plan_FFT_c2c);
+    fftw_destroy_plan(plan_FFT_r2c);
+    fftw_destroy_plan(plan_iFFT_c2c);
+    fftw_destroy_plan(plan_iFFT_c2r);
+
+    /* Free memory */
+    fftw_free(fxy_arr);
+    fftw_free(FFT_c2c);
+    fftw_free(FFT_analytic_c2c);
+    fftw_free(iFFT_c2c);
+    fftw_free(FFT_r2c);
+    fftw_free(FFT_analytic_r2c);
+    fftw_free(iFFT_c2r);
+}
+

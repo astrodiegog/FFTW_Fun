@@ -1,0 +1,26 @@
+#include <string.h>
+
+#include <math.h>
+
+#include <complex.h>
+#include "hdf5.h"
+#include <fftw3.h>
+
+
+/* Define max string length */
+#define MAXLEN 1024
+
+/* \fn void Write_HDF5_1Dgrouptest(hid_t, char *, hid_t, double *) */
+/* Routine to write array of double */
+void Write_HDF5_1Dgrouptest(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *data_arr);
+
+
+/* \fn void Write_FFTWarr_1Dgrouptest(hid_t, char *, hid_t, fftw_complex *, int) */
+/* Routine to write Real&Imaginary array of fftw_complex with size Nx */
+extern void Write_FFTWarr_1Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t dataspace_id, fftw_complex *FFTW_arr, int Nx);
+
+/* \fn void Write_FFTWarr_2Dgrouptest(hid_t, char *, hid_t, fftw_complex *, int, int) */
+/* Routine to write Real&Imaginary array of fftw_complex with size Nx,Ny */
+extern void Write_FFTWarr_2Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t dataspace_id, fftw_complex *FFTW_arr, int Nx, int Ny);
+
+

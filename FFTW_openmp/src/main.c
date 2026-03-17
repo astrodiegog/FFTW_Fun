@@ -6,6 +6,7 @@
 #include <complex.h>
 
 #include "hdf5.h"
+#include <omp.h>
 
 #include "testfunctions.h"
 
@@ -122,11 +123,22 @@ int main(int argc, char **argv)
     double ymin, ymax, dy;
     double *y_arr, *ky_arr_c, *ky_arr_r;
 
-	/* Declare time info */
-	time_t t_start, t_end;
-	float t_elapsed;
+	/* Declare + initialize time info */
+    struct timeval t_start, t_end;
+    double time_elapsed_us;
 
-	t_start = time(NULL);
+	/* Declare OMP vars */
+	int max_nthreads_omp;
+	int init_status;
+
+	max_nthreads_omp = omp_get_max_threads();
+	printf("Max OpenMP number of threads : %d \n", max_nthreads_omp);
+	init_status = fftw_init_threads();
+
+	fftw_plan_with_nthreads(max_nthreads_omp);
+
+    gettimeofday(&t_start, NULL);
+
 
 	/* Create file */
     file_id = H5Fcreate(FileName, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
@@ -186,10 +198,12 @@ int main(int argc, char **argv)
 
 	/* Define info for 2D tests */
 	Nx = 256;
+	//Nx = 2048;
     Nx_r = (int) ((Nx / 2.) + 1.); // number of fft bins for real fft
 	dx = (xmax - xmin) / Nx;
 
 	Ny = 512;
+	//Ny = 4096;
     Ny_r = (int) ((Ny / 2.) + 1.); // number of fft bins for real fft
 	ymin = -10.;
 	ymax = 10.;
@@ -286,10 +300,12 @@ int main(int argc, char **argv)
 	status = H5Gclose(grp_2D_id);
 	status = H5Fclose(file_id);
 
-	t_end = time(NULL);
-	t_elapsed = difftime(t_end, t_start) ;
+	gettimeofday(&t_end, NULL);
 
-	printf("Program took %f secs \n", t_elapsed);
+    time_elapsed_us = (t_end.tv_sec - t_start.tv_sec) * 1.e6;
+    time_elapsed_us += t_end.tv_usec - t_start.tv_usec;
+    printf("Total elapsed time : %.6f secs \n", time_elapsed_us * 1e-6);
+
 	return 0;
 }
 

@@ -4,7 +4,7 @@
 
 #include <complex.h>
 #include "hdf5.h"
-#include <fftw3-mpi.h>
+#include <fftw3.h>
 
 
 /* Define max string length */
@@ -23,4 +23,12 @@ extern void Write_FFTWarr_1Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t
 /* Routine to write Real&Imaginary array of fftw_complex with size Nx,Ny */
 extern void Write_FFTWarr_2Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t dataspace_id, fftw_complex *FFTW_arr, int Nx, int Ny);
 
+
+/* \fn void Write_HDF5_int_attribute(hid_t, char *, hid_t, int *) */
+/* Routine to write array of ints as attribute */
+void Write_HDF5_int_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, int *attr_int_arr);
+
+/* \fn void Write_HDF5_double_attribute(hid_t, char *, hid_t, double *) */
+/* Routine to write array of double as attribute */
+void Write_HDF5_double_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *attr_double_arr);
 

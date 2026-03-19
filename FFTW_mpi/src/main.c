@@ -15,6 +15,22 @@
 #define MAXLEN 1024
 
 
+fftw_complex TestFunctionOne_FR(double x, double a)
+{
+	if ( fabs(x) > (1. / (2. * a)) )
+    {
+		return  0. + 0. * I;
+	}
+	else
+	{
+		return 1. + 0. * I;
+	}
+}
+
+
+
+
+
 
 
 int main(int argc, char **argv)
@@ -70,7 +86,6 @@ int main(int argc, char **argv)
 	/* Declare fftw info*/
 	ptrdiff_t N0;
     fftw_plan plan;
-    fftw_complex *fx_arr_local, *FFT_c2c_local;
     ptrdiff_t alloc_local, local_ni, local_i_start, local_no, local_o_start, i, j;
 
 
@@ -132,7 +147,14 @@ int main(int argc, char **argv)
 	int_data[0] = Nx_offset;
     Write_HDF5_int_attribute(grp_1D_id, "dims_offset", attrs1D_id, &int_data[0]); 
 
+
+	/* Run Test 1 */
+    grp_test_id = H5Gcreate(grp_1D_id, "TestOne", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
 	/* get local data size and allocate */
+	double *x_arr_local_fftw;
+	fftw_complex *fx_arr_local, *FFT_c2c_local;
+	hid_t dataspace1D_id_local_in_c, dataspace1D_id_local_out_c;
 	N0 = Nx;
 
     alloc_local = fftw_mpi_local_size_1d(N0, MPI_COMM_WORLD,
@@ -140,24 +162,63 @@ int main(int argc, char **argv)
 									&local_ni, &local_i_start,
                                     &local_no, &local_o_start);
 
+	dims1D_c[0] = local_ni;
+    dataspace1D_id_local_in_c = H5Screate_simple(Rank, dims1D_c, NULL);
+    dims1D_c[0] = local_no;
+    dataspace1D_id_local_out_c = H5Screate_simple(Rank, dims1D_c, NULL);
+
+
+	x_arr_local_fftw = (double *) fftw_malloc(sizeof(double) * alloc_local);
 	fx_arr_local = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * alloc_local);
 	FFT_c2c_local = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * alloc_local);
 
-	plan = fftw_mpi_plan_dft_1d(N0, &fx_arr_local, FFT_c2c_local, MPI_COMM_WORLD, FFTW_FORWARD, FFTW_ESTIMATE);
+	plan = fftw_mpi_plan_dft_1d(N0, fx_arr_local, FFT_c2c_local, MPI_COMM_WORLD, FFTW_FORWARD, FFTW_ESTIMATE);
 
+	double a = 2.;
+	/* initialize data to some function my_function(x,y) */
+    for (i = 0; i < local_ni; i++)
+	{
+		x_arr_local_fftw[i] = xmin + (local_i_start * dx) + i * dx;
+		fx_arr_local[i] = TestFunctionOne_FR(x_arr_local_fftw[i], a);
+	}
 
 	printf("--- Rank %d: I am allocating %d number of complex numbers \n", procID, alloc_local);
 	printf("--- Rank %d: fx_local has %d cells with offset of %d \n", procID, local_ni, local_i_start);
     printf("--- Rank %d: FFT_local has %d cells with offset of %d \n", procID, local_no, local_o_start);
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	Write_HDF5_dataset(grp_test_id, "x_arr_local_fftw", dataspace1D_id_local_in_c, &x_arr_local_fftw[0]);
+	printf("--- Rank %d: saved local xarr \n", procID);
+
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	Write_FFTWarr_1Dgrouptest(grp_test_id, "fx_arr", dataspace1D_id_local_in_c, &fx_arr_local[0], local_ni);
+	printf("--- Rank %d: saved local fxarr \n", procID);
+
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	fftw_execute(plan);
+	printf("--- Rank %d: executed FFT \n", procID);
+
+
+    Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_c2c", dataspace1D_id_local_out_c, &FFT_c2c_local[0], local_no);
+
+	printf("--- Rank %d: saved local FFT \n", procID);
 
 
 	/* Destroy plan */
 	fftw_destroy_plan(plan);
 
 	/* Free memory */
+	free(x_arr_local);
+	free(x_arr_local_fftw);
     fftw_free(fx_arr_local);
 	fftw_free(FFT_c2c_local);
 
+
+	/* Close HDF5 objects */
+    status = H5Gclose(grp_test_id);
+    status = H5Gclose(grp_1D_id);
 	status = H5Fclose(file_id);
 
 	gettimeofday(&t_end, NULL);

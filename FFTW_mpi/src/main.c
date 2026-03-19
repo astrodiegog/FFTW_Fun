@@ -15,6 +15,7 @@
 #define MAXLEN 1024
 
 
+
 fftw_complex TestFunctionOne_FR(double x, double a)
 {
 	if ( fabs(x) > (1. / (2. * a)) )
@@ -186,24 +187,14 @@ int main(int argc, char **argv)
 	printf("--- Rank %d: fx_local has %d cells with offset of %d \n", procID, local_ni, local_i_start);
     printf("--- Rank %d: FFT_local has %d cells with offset of %d \n", procID, local_no, local_o_start);
 
-	MPI_Barrier(MPI_COMM_WORLD);
 	Write_HDF5_dataset(grp_test_id, "x_arr_local_fftw", dataspace1D_id_local_in_c, &x_arr_local_fftw[0]);
-	printf("--- Rank %d: saved local xarr \n", procID);
 
-
-	MPI_Barrier(MPI_COMM_WORLD);
 	Write_FFTWarr_1Dgrouptest(grp_test_id, "fx_arr", dataspace1D_id_local_in_c, &fx_arr_local[0], local_ni);
-	printf("--- Rank %d: saved local fxarr \n", procID);
 
-
-	MPI_Barrier(MPI_COMM_WORLD);
 	fftw_execute(plan);
-	printf("--- Rank %d: executed FFT \n", procID);
-
 
     Write_FFTWarr_1Dgrouptest(grp_test_id, "FFT_c2c", dataspace1D_id_local_out_c, &FFT_c2c_local[0], local_no);
 
-	printf("--- Rank %d: saved local FFT \n", procID);
 
 
 	/* Destroy plan */

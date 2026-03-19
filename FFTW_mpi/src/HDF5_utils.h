@@ -5,14 +5,14 @@
 #include <complex.h>
 #include "hdf5.h"
 #include <fftw3.h>
-
+#include "mpi_utils.h"
 
 /* Define max string length */
 #define MAXLEN 1024
 
 /* \fn void Write_HDF5_1Dgrouptest(hid_t, char *, hid_t, double *) */
 /* Routine to write array of double */
-void Write_HDF5_1Dgrouptest(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *data_arr);
+extern void Write_HDF5_1Dgrouptest(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *data_arr);
 
 
 /* \fn void Write_FFTWarr_1Dgrouptest(hid_t, char *, hid_t, fftw_complex *, int) */
@@ -26,9 +26,14 @@ extern void Write_FFTWarr_2Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t
 
 /* \fn void Write_HDF5_int_attribute(hid_t, char *, hid_t, int *) */
 /* Routine to write array of ints as attribute */
-void Write_HDF5_int_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, int *attr_int_arr);
+extern void Write_HDF5_int_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, int *attr_int_arr);
 
 /* \fn void Write_HDF5_double_attribute(hid_t, char *, hid_t, double *) */
 /* Routine to write array of double as attribute */
-void Write_HDF5_double_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *attr_double_arr);
+extern void Write_HDF5_double_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *attr_double_arr);
+
+
+/* \fn void Write_HDF5_dataset(hid_t, char *, hid_t, double *) */
+/* Routine to write double dataset of arr_name to grp_test_id */
+extern void Write_HDF5_dataset(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, double *data_arr);
 

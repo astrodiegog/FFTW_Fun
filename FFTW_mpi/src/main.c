@@ -11,10 +11,8 @@
 #include "HDF5_utils.h"
 #include "mpi_utils.h"
 
-/* Define max string length */
-#define MAXLEN 1024
 
-
+int procID;
 
 fftw_complex TestFunctionOne_FR(double x, double a)
 {
@@ -29,15 +27,10 @@ fftw_complex TestFunctionOne_FR(double x, double a)
 }
 
 
-
-
-
-
-
 int main(int argc, char **argv)
 {
 	/* Program info */
-	int procID, nprocs;
+	int nprocs;
 	MPI_Status status_mpi;
 	
 	printf("waddup !\n");

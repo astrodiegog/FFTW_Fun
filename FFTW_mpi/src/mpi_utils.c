@@ -1,7 +1,6 @@
 #include "mpi_utils.h"
-#include <stdio.h>
 
-extern int greatest_prime_factor(int num)
+int greatest_prime_factor(int num)
 {
     int prime_factor;
 
@@ -33,15 +32,13 @@ extern int greatest_prime_factor(int num)
 	return prime_factor;
 }
 
-
-
 void Tile_Decomposition1D(int nprocs, int *np_x)
 {
 	*np_x = nprocs;
 	return;
 }
 
-void Domain_Decomposition1D(int Nx, int np_x, int *Nx_local)
+extern void Domain_Decomposition1D(int Nx, int np_x, int *Nx_local)
 {
 	int n;
 	n = Nx % np_x;

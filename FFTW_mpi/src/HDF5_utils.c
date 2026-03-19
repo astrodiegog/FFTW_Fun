@@ -68,7 +68,6 @@ extern void Write_FFTWarr_2Dgrouptest(hid_t grp_test_id, char *arr_prefix, hid_t
 {
     int i, j, indx;
     double FFTW_arr_Real[Nx * Ny], FFTW_arr_Imag[Nx * Ny];
-	//double FFTW_arr_Real[Nx][Ny], FFTW_arr_Imag[Nx][Ny];
     char realarr_name[MAXLEN], imagarr_name[MAXLEN];
 
     for (i = 0; i < Nx; i++)

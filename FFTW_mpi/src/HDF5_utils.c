@@ -1,12 +1,9 @@
 #include "HDF5_utils.h"
-#include "mpi_utils.h"
 
 extern void Write_HDF5_int_attribute(hid_t grp_test_id, char *arr_name, hid_t dataspace_id, int *attr_int_arr)
 {
     hid_t attr_id;
     herr_t status;
-
-	printf("--- Rank %d: writing attribute %s \n", procID, arr_name);
 
     attr_id = H5Acreate(grp_test_id, arr_name, H5T_STD_I32BE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
     status = H5Awrite(attr_id, H5T_NATIVE_INT, attr_int_arr);

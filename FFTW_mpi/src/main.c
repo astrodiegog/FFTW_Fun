@@ -9,6 +9,7 @@
 #include "hdf5.h"
 
 #include "HDF5_utils.h"
+#include "testfunctions.h"
 #include "mpi_utils.h"
 
 
@@ -89,7 +90,6 @@ int main(int argc, char **argv)
 	printf("--- Rank %d : I have %d cells from the global %d cells with %d offsets --- \n", procID, Nx_local, Nx, Nx_offset);
 	sprintf(FileName_appendix, "%d", procID);
     strcat(FileName, FileName_appendix);
-	printf("File name: %s \n", FileName);
     file_id = H5Fcreate(FileName, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
 
@@ -133,11 +133,11 @@ int main(int argc, char **argv)
 
 
 
-
+	/* Free memory */
 	free(x_arr_local);
 	
-
-    status = H5Gclose(grp_test_id);
+	/* Close HDF5 info */
+    status = H5Gclose(grp_1D_id);
 	status = H5Fclose(file_id);
 
 	gettimeofday(&t_end, NULL);

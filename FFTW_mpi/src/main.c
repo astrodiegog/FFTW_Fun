@@ -67,6 +67,13 @@ int main(int argc, char **argv)
 	struct timeval t_start, t_end;
 	double time_elapsed_us;
 
+	/* Declare fftw info*/
+	ptrdiff_t N0;
+    fftw_plan plan;
+    fftw_complex *fx_arr_local, *FFT_c2c_local;
+    ptrdiff_t alloc_local, local_ni, local_i_start, local_no, local_o_start, i, j;
+
+
 	/* Call MPI routines & set nprocs and nprocID*/
 	MPI_Init(&argc, &argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
@@ -77,6 +84,9 @@ int main(int argc, char **argv)
 
 	printf("--- Rank %d : hello! --- \n", procID);
 
+	/* fftw init */
+	fftw_mpi_init();
+
 	/* Assign number of processes to pointer of x */
 	Tile_Decomposition1D(nprocs, &np_x);
 
@@ -85,7 +95,7 @@ int main(int argc, char **argv)
 	Nx_offset = Nx_local * procID;
 
 	/* Create file */
-	printf("--- Rank %d : I have %d cells from the global %d cells with %d offsets --- \n", procID, Nx_local, Nx_offset, Nx);
+	printf("--- Rank %d : I have %d cells from the global %d cells with %d offsets --- \n", procID, Nx_local, Nx, Nx_offset);
 	sprintf(FileName_appendix, "%d", procID);
     strcat(FileName, FileName_appendix);
 	printf("File name: %s \n", FileName);
@@ -106,7 +116,6 @@ int main(int argc, char **argv)
     hid_t attr_id;
 
 	x_arr_local = (double *) malloc(sizeof(double) * Nx_local);
-	int i;
     for (i=0; i < Nx_local; i++)
     {
         x_arr_local[i] = xmin + (Nx_offset * dx) + i * dx;
@@ -123,6 +132,32 @@ int main(int argc, char **argv)
 	int_data[0] = Nx_offset;
     Write_HDF5_int_attribute(grp_1D_id, "dims_offset", attrs1D_id, &int_data[0]); 
 
+	/* get local data size and allocate */
+	N0 = Nx;
+
+    alloc_local = fftw_mpi_local_size_1d(N0, MPI_COMM_WORLD,
+									FFTW_FORWARD, FFTW_ESTIMATE,
+									&local_ni, &local_i_start,
+                                    &local_no, &local_o_start);
+
+	fx_arr_local = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * alloc_local);
+	FFT_c2c_local = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * alloc_local);
+
+	plan = fftw_mpi_plan_dft_1d(N0, &fx_arr_local, FFT_c2c_local, MPI_COMM_WORLD, FFTW_FORWARD, FFTW_ESTIMATE);
+
+
+	printf("--- Rank %d: I am allocating %d number of complex numbers \n", procID, alloc_local);
+	printf("--- Rank %d: fx_local has %d cells with offset of %d \n", procID, local_ni, local_i_start);
+    printf("--- Rank %d: FFT_local has %d cells with offset of %d \n", procID, local_no, local_o_start);
+
+
+	/* Destroy plan */
+	fftw_destroy_plan(plan);
+
+	/* Free memory */
+    fftw_free(fx_arr_local);
+	fftw_free(FFT_c2c_local);
+
 	status = H5Fclose(file_id);
 
 	gettimeofday(&t_end, NULL);
@@ -130,7 +165,6 @@ int main(int argc, char **argv)
     time_elapsed_us = (t_end.tv_sec - t_start.tv_sec) * 1.e6;
     time_elapsed_us += t_end.tv_usec - t_start.tv_usec;
     printf("--- Rank %d: Total elapsed time : %.6f secs \n", procID, time_elapsed_us * 1e-6);
-
 
 	MPI_Finalize();
 

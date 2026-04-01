@@ -42,7 +42,6 @@ fftw_complex TestFunctionThree(double x, double a);
 fftw_complex TestFunctionThree_FFT(double x, double a);
 
 
-
 /* \fn void TestFunctionFour(double, double) */
 /* Routine for testing fftw */
 fftw_complex TestFunctionFour(double x, double y);
@@ -52,13 +51,13 @@ fftw_complex TestFunctionFour(double x, double y);
 fftw_complex TestFunctionFour_FFT(double kx, double ky);
 
 
-/* \fn void TestFunctionFive(int, int, double *, double *, fftw_complex *) */
+/* \fn void TestFunctionFive(double, double) */
 /* Routine for testing fftw */
-extern void TestFunctionFive(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr);
+fftw_complex TestFunctionFive(double x, double y);
 
-/* \fn void TestFunctionFive_FFT(int, int, double *, double *, fftw_complex *) */
+/* \fn void TestFunctionFive_FFT(double, double) */
 /* Routine for analytic fft */
-extern void TestFunctionFive_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic);
+fftw_complex TestFunctionFive_FFT(double kx, double ky);
 
 /* \fn void TestFunctionSix(int, int, double *, double *, fftw_complex *, double, double ) */
 /* Routine for testing fftw */
@@ -69,10 +68,6 @@ extern void TestFunctionSix(int Nx, int Ny, double *x_arr, double *y_arr, fftw_c
 extern void TestFunctionSix_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic, double a, double b);
 
 
-
-/* \fn void RunTestFour(hid_t, double *, double *, hid_t, double *, double *, hid_t, double *, int, int, int, double) */
-/* Routine to complete Test Four */
-extern void RunTestFour(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *ky_arr_r, int Nx, int Ny, int Ny_r);
 
 /* \fn void RunTestFive(hid_t, double *, double *, hid_t, double *, double *, hid_t, double *, int, int, int, double) */
 /* Routine to complete Test Five */

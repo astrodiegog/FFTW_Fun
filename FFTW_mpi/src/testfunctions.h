@@ -42,40 +42,30 @@ fftw_complex TestFunctionThree(double x, double a);
 fftw_complex TestFunctionThree_FFT(double x, double a);
 
 
-/* \fn void TestFunctionFour(double, double) */
+/* \fn fftw_complex TestFunctionFour(double, double) */
 /* Routine for testing fftw */
 fftw_complex TestFunctionFour(double x, double y);
 
-/* \fn void TestFunctionFour_FFT(double, double) */
+/* \fn fftw_complex TestFunctionFour_FFT(double, double) */
 /* Routine for analytic fft */
 fftw_complex TestFunctionFour_FFT(double kx, double ky);
 
 
-/* \fn void TestFunctionFive(double, double) */
+/* \fn fftw_complex TestFunctionFive(double, double) */
 /* Routine for testing fftw */
 fftw_complex TestFunctionFive(double x, double y);
 
-/* \fn void TestFunctionFive_FFT(double, double) */
+/* \fn fftw_complex TestFunctionFive_FFT(double, double) */
 /* Routine for analytic fft */
 fftw_complex TestFunctionFive_FFT(double kx, double ky);
 
-/* \fn void TestFunctionSix(int, int, double *, double *, fftw_complex *, double, double ) */
+/* \fn fftw_complex TestFunctionSix(double, double, double, double) */
 /* Routine for testing fftw */
-extern void TestFunctionSix(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr, double a, double b);
+fftw_complex TestFunctionSix(double x, double y, double a, double b);
 
-/* \fn void TestFunctionSix_FFT(int, int, double *, double *, fftw_complex *, double, double) */
+/* \fn fftw_complex TestFunctionSix_FFT(double, double, double, double) */
 /* Routine for analytic fft */
-extern void TestFunctionSix_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic, double a, double b);
-
-
-
-/* \fn void RunTestFive(hid_t, double *, double *, hid_t, double *, double *, hid_t, double *, int, int, int, double) */
-/* Routine to complete Test Five */
-extern void RunTestFive(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *ky_arr_r, int Nx, int Ny, int Ny_r);
-
-/* \fn void RunTestSix(hid_t, double *, double *, hid_t, double *, double *, hid_t, double *, int, int, int, double) */
-/* Routine to complete Test Six */
-extern void RunTestSix(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t dataspace_id_c, double *kx_arr_c, double *ky_arr_c, hid_t dataspace_id_r, double *ky_arr_r, int Nx, int Ny, int Ny_r, double a, double b);
+fftw_complex TestFunctionSix_FFT(double kx, double ky, double a, double b);
 
 
 

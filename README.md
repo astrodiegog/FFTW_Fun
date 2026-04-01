@@ -123,3 +123,7 @@ In the future, would like to also test Heaviside function (equations 205 and 315
 
 The benefits from multithreading are most visible when we complete a 2D FFT over a larger domain (like (2048, 4096)) but these create large HDF5 files, so I leave these dimensions commented out.
 
+I have been able to implement MPI and will most likely not touch this repo for a while. I am going to use this repo as a backbone of a future repo that can apply a power spectrum to a Gaussian density distribution.
+
+
+

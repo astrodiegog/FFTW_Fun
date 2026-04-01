@@ -581,12 +581,20 @@ extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin,
     fftw_plan plan_FFT_c2c, plan_iFFT_c2c;
  	ptrdiff_t alloc_local_FFT, local_n_FFT, local_n0_start_FFT;
     ptrdiff_t alloc_local_iFFT, local_n_iFFT, local_n0_start_iFFT;
+	fftw_plan plan_FFT_r2c, plan_iFFT_c2r;
+
+
 
     /* Declare all FFT-related arrays*/
     double *x_arr_local_FFT, *kx_arr_local_FFT, *x_arr_local_iFFT;
     double *y_arr_local_FFT, *ky_arr_local_FFT, *y_arr_local_iFFT;
     fftw_complex *fxy_arr_local, *FFT_c2c_local, *FFT_analytic_c2c_local, *iFFT_c2c_local;
+	double *fxy_arr_Real;
+	fftw_complex *FFT_r2c_local, *FFT_analytic_r2c_local;
+	double *iFFT_c2r;
     hid_t dataspace2D_id_local_c_FFT, dataspace2D_id_local_c_iFFT;
+	hid_t dataspace2D_id_local_r_FFT, dataspace2D_id_local_r_iFFT;
+
 
     /* Grab the amount of data allocated by local_size routines */
     N0 = Nx;

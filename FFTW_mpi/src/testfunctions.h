@@ -43,13 +43,13 @@ fftw_complex TestFunctionThree_FFT(double x, double a);
 
 
 
-/* \fn void TestFunctionFour(int, int, double *, double *, fftw_complex *) */
+/* \fn void TestFunctionFour(double, double) */
 /* Routine for testing fftw */
-extern void TestFunctionFour(int Nx, int Ny, double *x_arr, double *y_arr, fftw_complex *fxy_arr);
+fftw_complex TestFunctionFour(double x, double y);
 
-/* \fn void TestFunctionFour_FFT(int, int, double *, double *, fftw_complex *) */
+/* \fn void TestFunctionFour_FFT(double, double) */
 /* Routine for analytic fft */
-extern void TestFunctionFour_FFT(int Nx, int Ny, double *kx_arr, double *ky_arr, fftw_complex *FFT_analytic);
+fftw_complex TestFunctionFour_FFT(double kx, double ky);
 
 
 /* \fn void TestFunctionFive(int, int, double *, double *, fftw_complex *) */

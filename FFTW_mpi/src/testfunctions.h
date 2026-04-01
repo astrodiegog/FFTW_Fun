@@ -88,3 +88,7 @@ extern void RunTestSix(hid_t grp_test_id, double *x_arr, double *y_arr, hid_t da
 /* Routine to run all 1D FFT tests */
 extern void RunOneDimensionalTests(hid_t grp_1D_id, int Nx, double xmin, double dx);
 
+/* \fn void RunTwoDimensionalTest(hid_t, int, int, double, double, double, double) */
+/* Routine to run all 2D FFT tests */
+extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin, double ymin, double dx, double dy);
+

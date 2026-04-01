@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	
 	char FileName_appendix[MAXLEN];
 	hid_t file_id;
-	hid_t grp_1D_id;
+	hid_t grp_1D_id, grp_2D_id;
 	hid_t grp_test_id;
 	hid_t dataspace1D_id_c;
 	hid_t attrs1D_id;
@@ -128,8 +128,25 @@ int main(int argc, char **argv)
 	double_data[0] = dx;
 	Write_HDF5_double_attribute(grp_1D_id, "dx", attrs1D_id, &double_data[0]);
 
-
+	printf("--- Rank %d : Running 1D tests !  --- \n", procID);
 	RunOneDimensionalTests(grp_1D_id, Nx, xmin, dx);
+
+
+	/* Declare info for y-arr, redefine xarr info */
+    int Ny = 512;
+    double ymin = -10.;
+    double ymax = 10.;
+    double dy = (ymax - ymin) / Ny;
+	Nx = 256;
+    dx = (xmax - xmin) / Nx;
+
+
+
+	/* Create group for 2D tests */
+    grp_2D_id = H5Gcreate(file_id, "/TwoDimensionalTests", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	printf("--- Rank %d : Running 2D tests !  --- \n", procID);
+	RunTwoDimensionalTests(grp_2D_id, Nx, Ny, xmin, ymin, dx, dy);
 
 
 

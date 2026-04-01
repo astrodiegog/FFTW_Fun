@@ -607,8 +607,8 @@ extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin,
 											&local_n_r, &local_n0_start_r);
 
 
-	printf("--- Rank %d : I have %d cells from the global %d cells with %d offsets --- \n", 
-			procID, local_n_c*N1, N0*N1, local_n0_start_c*N1);
+	//printf("--- Rank %d : I have %ld cells from the global %ld cells with %ld offsets --- \n", 
+	//		procID, local_n_c*N1, N0*N1, local_n0_start_c*N1);
 
 	/* Create in/out dataspaces for FFT/iFFT */
     dims2D_c[0] = local_n_c;
@@ -642,7 +642,7 @@ extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin,
 
 	fxy_arr_Real_local = (double *) fftw_malloc(sizeof(double) * 2 * alloc_local_r);
 	FFT_r2c_local = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * alloc_local_r);
-    FFT_analytic_r2c_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * alloc_local_r);
+    FFT_analytic_r2c_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * (local_n_r * 2 * N1_r2c) );
     iFFT_c2r_local = (double *) fftw_malloc(sizeof(double) * 2 * alloc_local_r);
 
     /* Create plans */
@@ -786,6 +786,15 @@ extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin,
         }
 	}
 
+	for (i = 0; i < local_n_r; i++)
+    {
+        for (j = 0; j < N1; j++)
+        {
+            indx = j + i * 2 * N1_r2c;
+			FFT_analytic_r2c_local[indx] = TestFunctionFour_FFT(kx_arr_local_r[indx], ky_arr_local_r[indx]);
+        }
+    }
+
 
     /* Create group for this test */
     grp_test_id = H5Gcreate(grp_2D_id, "TestFour", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -798,12 +807,17 @@ extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin,
     Write_FFTWarr_2Dgrouptest(grp_test_id, "iFFT_c2c", dataspace2D_id_local_c, &iFFT_c2c_local[0], local_n_c, N1);
 
 	Write_HDF5_dataset(grp_test_id, "fxy_arr_Real_r2c", dataspace2D_id_local_r_input, &fxy_arr_Real_local[0]);
-
-
+	Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_analytic_r2c", dataspace2D_id_local_r, &FFT_analytic_r2c_local[0], local_n_r, N1_r2c);
+	fftw_execute(plan_FFT_r2c);
+    Write_FFTWarr_2Dgrouptest(grp_test_id, "FFT_r2c", dataspace2D_id_local_r, &FFT_r2c_local[0], local_n_r, N1_r2c);
+	fftw_execute(plan_iFFT_c2r);
+	Write_HDF5_dataset(grp_test_id, "iFFT_r2c", dataspace2D_id_local_r_input, &iFFT_c2r_local[0]);
 
 	/* Destroy plans */
     fftw_destroy_plan(plan_FFT_c2c);
     fftw_destroy_plan(plan_iFFT_c2c);
+	fftw_destroy_plan(plan_FFT_r2c);
+	fftw_destroy_plan(plan_iFFT_c2r);
 
     /* Free memory */
     free(x_arr_local_c);
@@ -816,6 +830,10 @@ extern void RunTwoDimensionalTests(hid_t grp_2D_id, int Nx, int Ny, double xmin,
     fftw_free(FFT_c2c_local);
     fftw_free(FFT_analytic_c2c_local);
     fftw_free(iFFT_c2c_local);
+	fftw_free(fxy_arr_Real_local);
+	fftw_free(FFT_analytic_r2c_local);
+	fftw_free(FFT_r2c_local);
+	fftw_free(iFFT_c2r_local);
 
     /* Close testing group id */
     status = H5Gclose(grp_test_id);

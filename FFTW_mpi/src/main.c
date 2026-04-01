@@ -155,6 +155,7 @@ int main(int argc, char **argv)
 	
 	/* Close HDF5 info */
     status = H5Gclose(grp_1D_id);
+	status = H5Gclose(grp_2D_id);
 	status = H5Fclose(file_id);
 
 	gettimeofday(&t_end, NULL);

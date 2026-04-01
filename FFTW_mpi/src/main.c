@@ -40,7 +40,6 @@ int main(int argc, char **argv)
 	char FileName_appendix[MAXLEN];
 	hid_t file_id;
 	hid_t grp_1D_id, grp_2D_id;
-	hid_t grp_test_id;
 	hid_t dataspace1D_id_c;
 	hid_t attrs1D_id;
 
@@ -48,7 +47,7 @@ int main(int argc, char **argv)
 
 	/* Declare array of dimensions */
 	hsize_t dims1D_c[1];
-	hsize_t attrs1D[1], attrs2D[2];
+	hsize_t attrs1D[1];
 	int Rank = 1;
 
 	/* Declare info for x-arr */
@@ -56,7 +55,7 @@ int main(int argc, char **argv)
 	double xmin = -5.;
 	double xmax = 5.;
     double dx = (xmax - xmin) / Nx;
-	double *x_arr_local, *kx_arr_c, *kx_arr_r;
+	double *x_arr_local;
 
 	/* Declare x-arr info for processor */
 	int np_x;
@@ -105,7 +104,6 @@ int main(int argc, char **argv)
     grp_1D_id = H5Gcreate(file_id, "/OneDimensionalTests", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
     /* Create+Write xarray attributes */
-    hid_t attr_id;
 
 	x_arr_local = (double *) malloc(sizeof(double) * Nx_local);
 	int i;
